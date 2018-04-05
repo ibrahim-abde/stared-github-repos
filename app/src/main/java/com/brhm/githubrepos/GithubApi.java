@@ -9,6 +9,6 @@ import retrofit2.http.Query;
 public interface GithubApi {
 
     @GET("search/repositories?sort=stars&order=desc")
-    Single<ReposResponse> getMostStaredRepos(@Query("q") String filter);
+    Single<ReposResponse> getMostStaredRepos(@Query("q") String filter,@Query("page") int page);
 
 }

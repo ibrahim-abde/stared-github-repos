@@ -27,16 +27,14 @@ public class ReposListPresenter {
         if(disposable != null && !disposable.isDisposed()) return;
 
         view.showLoading();
-        disposable = githubApi.getMostStaredRepos(Utils.getLastMonthSearchFilter())
+        disposable = githubApi.getMostStaredRepos(Utils.getLastMonthSearchFilter(),page)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-
-                .doOnError((error) -> view.showErrorMessage())
-
                 .subscribe((reposResponse) -> {
                     view.addRepos(reposResponse.getRepos());
                     page++;
-                });
+                }
+                , (error) -> view.showErrorMessage());
     }
 
 

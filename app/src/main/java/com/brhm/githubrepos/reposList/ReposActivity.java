@@ -7,7 +7,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.brhm.githubrepos.EndlessRecyclerViewScrollListener;
 import com.brhm.githubrepos.GitReposApplication;
 import com.brhm.githubrepos.R;
 import com.brhm.githubrepos.models.Repo;
@@ -40,12 +42,22 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
         GitReposApplication application = (GitReposApplication) getApplication();
 
         presenter = new ReposListPresenter(this,application.getGithubApi());
-        presenter.loadRepos();
 
         reposListAdapter = new ReposListAdapter();
         reposList.setAdapter(reposListAdapter);
-        reposList.setLayoutManager(new LinearLayoutManager(this));
 
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        reposList.setLayoutManager(layoutManager);
+
+        reposList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+            @Override
+            public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
+                presenter.loadRepos();
+            }
+        });
+
+
+        presenter.loadRepos();
     }
 
     @Override
@@ -57,13 +69,21 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
 
     @Override
     public void showLoading() {
-        progressBar.setVisibility(View.VISIBLE);
+        if(reposListAdapter.isEmpty())
+            progressBar.setVisibility(View.VISIBLE);
+        else
+            reposListAdapter.setLoading(true);
     }
 
     @Override
     public void showErrorMessage() {
-        reposList.setVisibility(View.GONE);
-        progressBar.setVisibility(View.GONE);
+        if(reposListAdapter.isEmpty()) {
+            reposList.setVisibility(View.GONE);
+            progressBar.setVisibility(View.GONE);
+            errorView.setVisibility(View.VISIBLE);
+        } else
+            Toast.makeText(this, R.string.loading_error_message, Toast.LENGTH_LONG).show();
+
     }
 
     @Override

@@ -1,14 +1,11 @@
 package com.brhm.githubrepos.reposList;
 
-import android.util.Log;
-
 import com.brhm.githubrepos.GithubApi;
+import com.brhm.githubrepos.Utils;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-
-import static com.brhm.githubrepos.reposList.ReposActivity.TAG;
 
 public class ReposListPresenter {
 
@@ -30,7 +27,7 @@ public class ReposListPresenter {
         if(disposable != null && !disposable.isDisposed()) return;
 
         view.showLoading();
-        disposable = githubApi.getMostStaredRepos()
+        disposable = githubApi.getMostStaredRepos(Utils.getLastMonthSearchFilter())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
 

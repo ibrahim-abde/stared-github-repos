@@ -5,10 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.brhm.githubrepos.R;
+import com.brhm.githubrepos.Utils;
 import com.brhm.githubrepos.models.Repo;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +40,14 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.View
         Repo repo = repos.get(position);
 
         holder.name.setText(repo.getName());
+        holder.description.setText(repo.getDescription());
+        holder.numberStars.setText(Utils.getShortNumber(repo.getStars()));
+        holder.username.setText(repo.getOwner().getName());
+
+        Picasso.get()
+                .load(repo.getOwner().getAvatarURL())
+                .placeholder(R.drawable.avatar_holder)
+                .into(holder.userAvatar);
     }
 
     public void addRepos(List<Repo> repos) {
@@ -52,6 +63,18 @@ public class ReposListAdapter extends RecyclerView.Adapter<ReposListAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.name)
         TextView name;
+
+        @BindView(R.id.description)
+        TextView description;
+
+        @BindView(R.id.username)
+        TextView username;
+
+        @BindView(R.id.user_image)
+        ImageView userAvatar;
+
+        @BindView(R.id.number_stars)
+        TextView numberStars;
 
         ViewHolder(View itemView) {
             super(itemView);

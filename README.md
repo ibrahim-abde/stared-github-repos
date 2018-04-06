@@ -10,5 +10,5 @@ libraries used :
 * ButterKnife
 * Picasso
 
-## ScreenShots
-![alt text](https://raw.githubusercontent.com/ibrahim-abde/stared-github-repos-/master/screenshot.png)
+## ScreenShot
+![alt text](https://raw.githubusercontent.com/ibrahim-abde/stared-github-repos/master/screenshot.png)

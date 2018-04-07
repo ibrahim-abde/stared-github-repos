@@ -10,14 +10,17 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.brhm.githubrepos.EndlessRecyclerViewScrollListener;
-import com.brhm.githubrepos.GitReposApplication;
+import com.brhm.githubrepos.GithubApi;
 import com.brhm.githubrepos.R;
 import com.brhm.githubrepos.models.Repo;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
 
 public class ReposActivity extends AppCompatActivity implements ReposListView {
     static final String TAG = "GITHUB_REPOS";
@@ -33,15 +36,17 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
 
     ReposListAdapter reposListAdapter;
 
+    @Inject
+    GithubApi githubApi;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_repos);
         ButterKnife.bind(this);
 
-        GitReposApplication application = (GitReposApplication) getApplication();
-
-        presenter = new ReposListPresenter(this,application.getGithubApi());
+        AndroidInjection.inject(this);
+        presenter = new ReposListPresenter(this,githubApi);
 
         reposListAdapter = new ReposListAdapter();
         reposList.setAdapter(reposListAdapter);

@@ -1,33 +1,33 @@
 package com.brhm.githubrepos;
 
+import android.app.Activity;
 import android.app.Application;
 
+import com.brhm.githubrepos.di.DaggerAppComponent;
+
+import javax.inject.Inject;
+
+import dagger.android.AndroidInjector;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class GitReposApplication extends Application {
+public class GitReposApplication extends Application implements HasActivityInjector {
 
-    private GithubApi githubApi;
+    @Inject
+    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        setUpGithubApi();
+        DaggerAppComponent.create().inject(this);
     }
 
-    private void setUpGithubApi() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com/")
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        githubApi = retrofit.create(GithubApi.class);
-    }
-
-    public GithubApi getGithubApi() {
-        return githubApi;
+    @Override
+    public AndroidInjector<Activity> activityInjector() {
+        return dispatchingAndroidInjector;
     }
 }

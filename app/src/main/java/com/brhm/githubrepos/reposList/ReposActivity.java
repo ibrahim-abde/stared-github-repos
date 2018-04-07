@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.brhm.githubrepos.EndlessRecyclerViewScrollListener;
-import com.brhm.githubrepos.GithubApi;
 import com.brhm.githubrepos.R;
 import com.brhm.githubrepos.models.Repo;
 
@@ -21,11 +19,10 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
+import io.reactivex.disposables.CompositeDisposable;
 
-public class ReposActivity extends AppCompatActivity implements ReposListView {
+public class ReposActivity extends AppCompatActivity {
     static final String TAG = "GITHUB_REPOS";
-
-    private ReposListPresenter presenter;
 
     @BindView(R.id.repos_list)
     RecyclerView reposList;
@@ -37,7 +34,9 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
     ReposListAdapter reposListAdapter;
 
     @Inject
-    GithubApi githubApi;
+    ReposListViewModel viewModel;
+
+    CompositeDisposable disposables = new CompositeDisposable();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +45,6 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
         ButterKnife.bind(this);
 
         AndroidInjection.inject(this);
-        presenter = new ReposListPresenter(this,githubApi);
 
         reposListAdapter = new ReposListAdapter();
         reposList.setAdapter(reposListAdapter);
@@ -57,22 +55,33 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
         reposList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
-                presenter.loadRepos();
+                viewModel.loadRepos();
             }
         });
 
 
-        presenter.loadRepos();
+        disposables.add(viewModel.model()
+                .subscribe(reposListModel -> {
+
+                   if(reposListModel.loading) {
+                       showLoading();
+                   } else if(reposListModel.error) {
+                        showErrorMessage();
+                   } else {
+                       addRepos(reposListModel.repos);
+                   }
+
+                }));
+
+        viewModel.loadRepos();
     }
 
-    @Override
     public void addRepos(List<Repo> repos) {
         progressBar.setVisibility(View.GONE);
         reposList.setVisibility(View.VISIBLE);
         reposListAdapter.addRepos(repos);
     }
 
-    @Override
     public void showLoading() {
         if(reposListAdapter.isEmpty())
             progressBar.setVisibility(View.VISIBLE);
@@ -80,7 +89,6 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
             reposListAdapter.setLoading(true);
     }
 
-    @Override
     public void showErrorMessage() {
         if(reposListAdapter.isEmpty()) {
             reposList.setVisibility(View.GONE);
@@ -94,6 +102,7 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.destroy();
+        disposables.dispose();
+        disposables.clear();
     }
 }

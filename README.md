@@ -8,7 +8,7 @@ My solution to the Hidden founders coding challenge [Hidden founders coding chal
 * the branch [mvvm](https://github.com/ibrahim-abde/stared-github-repos/tree/mvvm) has the version implementing the Model View ViewModel pattern.
   
 
-##libraries used :
+## Libraries used :
 * Retrofit + RxJava
 * ButterKnife
 * Picasso

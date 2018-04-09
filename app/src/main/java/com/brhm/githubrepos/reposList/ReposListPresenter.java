@@ -3,6 +3,8 @@ package com.brhm.githubrepos.reposList;
 import com.brhm.githubrepos.GithubApi;
 import com.brhm.githubrepos.Utils;
 
+import javax.inject.Inject;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -16,6 +18,7 @@ public class ReposListPresenter {
 
     private Disposable disposable;
 
+    @Inject
     public ReposListPresenter(ReposListView view, GithubApi githubApi) {
         this.view = view;
         this.githubApi = githubApi;

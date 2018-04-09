@@ -25,7 +25,6 @@ import dagger.android.AndroidInjection;
 public class ReposActivity extends AppCompatActivity implements ReposListView {
     static final String TAG = "GITHUB_REPOS";
 
-    private ReposListPresenter presenter;
 
     @BindView(R.id.repos_list)
     RecyclerView reposList;
@@ -34,10 +33,13 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
     @BindView(R.id.error_view)
     View errorView;
 
-    ReposListAdapter reposListAdapter;
-
     @Inject
-    GithubApi githubApi;
+    RecyclerView.LayoutManager layoutManager;
+    @Inject
+    ReposListAdapter reposListAdapter;
+    @Inject
+    ReposListPresenter presenter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,15 +48,11 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
         ButterKnife.bind(this);
 
         AndroidInjection.inject(this);
-        presenter = new ReposListPresenter(this,githubApi);
 
-        reposListAdapter = new ReposListAdapter();
         reposList.setAdapter(reposListAdapter);
-
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         reposList.setLayoutManager(layoutManager);
 
-        reposList.addOnScrollListener(new EndlessRecyclerViewScrollListener(layoutManager) {
+        reposList.addOnScrollListener(new EndlessRecyclerViewScrollListener((LinearLayoutManager) layoutManager) {
             @Override
             public void onLoadMore(int page, int totalItemsCount, RecyclerView view) {
                 presenter.loadRepos();

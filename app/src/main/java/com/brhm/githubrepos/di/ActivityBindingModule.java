@@ -8,7 +8,7 @@ import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
 @Module
-public abstract class ActivityBuilder {
+public abstract class ActivityBindingModule {
 
     @ContributesAndroidInjector(modules = {ReposListModule.class})
     abstract ReposActivity bindReposListActivity();

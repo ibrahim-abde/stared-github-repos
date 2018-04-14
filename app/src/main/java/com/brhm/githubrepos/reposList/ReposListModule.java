@@ -12,7 +12,7 @@ import dagger.Provides;
 public abstract class ReposListModule {
 
     @Binds
-    abstract ReposListView getReposListView(ReposActivity activity);
+    abstract ReposListMVP.View getReposListView(ReposActivity activity);
 
     @Provides
     public static ReposListAdapter getListAdapter() {

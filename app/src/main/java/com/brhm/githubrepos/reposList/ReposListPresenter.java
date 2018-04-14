@@ -9,9 +9,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class ReposListPresenter {
+public class ReposListPresenter implements ReposListMVP.Presenter {
 
-    private final ReposListView view;
+    private final ReposListMVP.View view;
     private final GithubApi githubApi;
 
     private int page = 1;
@@ -19,7 +19,7 @@ public class ReposListPresenter {
     private Disposable disposable;
 
     @Inject
-    public ReposListPresenter(ReposListView view, GithubApi githubApi) {
+    public ReposListPresenter(ReposListMVP.View view, GithubApi githubApi) {
         this.view = view;
         this.githubApi = githubApi;
     }
@@ -40,8 +40,8 @@ public class ReposListPresenter {
                 , (error) -> view.showErrorMessage());
     }
 
-
-    public void destroy() {
+    @Override
+    public void onDestroy() {
         disposable.dispose();
     }
 }

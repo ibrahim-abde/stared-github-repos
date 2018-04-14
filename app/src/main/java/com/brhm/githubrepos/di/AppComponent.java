@@ -9,7 +9,7 @@ import dagger.android.AndroidInjectionModule;
 import dagger.android.AndroidInjector;
 
 @Singleton
-@Component(modules = {NetworkModule.class,ActivityBindingModule.class, AndroidInjectionModule.class})
+@Component(modules = {AppModule.class,NetworkModule.class,ActivityBindingModule.class, AndroidInjectionModule.class})
 public interface AppComponent extends AndroidInjector<GitReposApplication> {
 
 }

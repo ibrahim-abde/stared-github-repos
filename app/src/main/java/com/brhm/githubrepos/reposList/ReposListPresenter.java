@@ -2,26 +2,27 @@ package com.brhm.githubrepos.reposList;
 
 import com.brhm.githubrepos.GithubApi;
 import com.brhm.githubrepos.Utils;
+import com.brhm.githubrepos.schedulers.BaseSchedulerProvider;
 
 import javax.inject.Inject;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
 
 public class ReposListPresenter implements ReposListMVP.Presenter {
 
     private final ReposListMVP.View view;
     private final GithubApi githubApi;
+    private final BaseSchedulerProvider schedulerProvider;
 
     private int page = 1;
 
     private Disposable disposable;
 
     @Inject
-    public ReposListPresenter(ReposListMVP.View view, GithubApi githubApi) {
+    public ReposListPresenter(ReposListMVP.View view, GithubApi githubApi, BaseSchedulerProvider schedulerProvider) {
         this.view = view;
         this.githubApi = githubApi;
+        this.schedulerProvider = schedulerProvider;
     }
 
 
@@ -31,8 +32,8 @@ public class ReposListPresenter implements ReposListMVP.Presenter {
 
         view.showLoading();
         disposable = githubApi.getMostStaredRepos(Utils.getLastMonthSearchFilter(),page)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(schedulerProvider.io())
+                .observeOn(schedulerProvider.mainThread())
                 .subscribe((reposResponse) -> {
                     view.addRepos(reposResponse.getRepos());
                     page++;

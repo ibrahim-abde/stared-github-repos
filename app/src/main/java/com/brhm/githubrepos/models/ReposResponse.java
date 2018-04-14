@@ -12,4 +12,8 @@ public class ReposResponse {
     public List<Repo> getRepos() {
         return repos;
     }
+
+    public void setRepos(List<Repo> repos) {
+        this.repos = repos;
+    }
 }

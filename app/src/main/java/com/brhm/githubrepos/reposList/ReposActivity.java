@@ -4,13 +4,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.brhm.githubrepos.EndlessRecyclerViewScrollListener;
-import com.brhm.githubrepos.GithubApi;
 import com.brhm.githubrepos.R;
 import com.brhm.githubrepos.models.Repo;
 
@@ -22,7 +20,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.AndroidInjection;
 
-public class ReposActivity extends AppCompatActivity implements ReposListView {
+public class ReposActivity extends AppCompatActivity implements ReposListMVP.View {
     static final String TAG = "GITHUB_REPOS";
 
 
@@ -92,6 +90,6 @@ public class ReposActivity extends AppCompatActivity implements ReposListView {
     @Override
     protected void onStop() {
         super.onStop();
-        presenter.destroy();
+        presenter.onDestroy();
     }
 }
